@@ -3,6 +3,8 @@
 
 const DEMO_AGE = ['0–17', '18–25', '26–35', '36–50', '51–65', '65+'];
 const DEMO_ORIGIN = ['South Asian', 'East Asian', 'Middle Eastern', 'African', 'European', 'American', 'Other'];
+/** Male/female stay close; female trails male by a few points */
+const MALE_RATIO = 0.51;
 
 let playlist = [];
 let assetsBase = '';
@@ -49,7 +51,7 @@ function buildMountainHourly(nowHour) {
 }
 
 function randomDetection() {
-  const sex = Math.random() < 0.52 ? 'Male' : 'Female';
+  const sex = Math.random() < MALE_RATIO ? 'Male' : 'Female';
   const age = DEMO_AGE[Math.floor(Math.random() * DEMO_AGE.length)];
   const origin = DEMO_ORIGIN[Math.floor(Math.random() * DEMO_ORIGIN.length)];
   return {
@@ -195,6 +197,9 @@ async function initVercelVideoEngine() {
   await video.play().catch(() => {});
 
   window.VERCEL_DEMO_MODE = true;
+  // Seed sex split so bars start close (female slightly lower)
+  session.totalToday = 100;
+  session.sexBreakdown = { Male: 51, Female: 49 };
   tickAnalytics(0);
 
   console.log(`[Vercel demo] ${playlist.length} videos, simulated analytics`);
