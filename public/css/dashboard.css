@@ -850,7 +850,7 @@ body.mobile-layout .topbar-right {
 body.mobile-layout .brand-sub { display: none; }
 body.mobile-layout .brand-name { font-size: 14px; }
 body.mobile-layout .kpi-chip {
-  flex: 1 1 calc(33.333% - 6px);
+  flex: 1 1 calc(50% - 6px);
   min-width: 0;
   padding: 5px 8px;
   gap: 6px;
@@ -858,12 +858,11 @@ body.mobile-layout .kpi-chip {
 body.mobile-layout .kpi-icon { display: none; }
 body.mobile-layout .kpi-val { font-size: var(--kpi-font); }
 body.mobile-layout .kpi-lbl { font-size: 9px; }
-body.mobile-layout .layout-open-btn .btn-label { display: none; }
 body.mobile-layout .layout-open-btn,
-body.mobile-layout .layout-edit-btn {
-  min-width: 36px;
-  min-height: 36px;
-  padding: 6px;
+body.mobile-layout .layout-edit-btn,
+body.mobile-layout #layout-open-btn,
+body.mobile-layout #layout-edit-btn {
+  display: none !important;
 }
 
 body.mobile-layout .dashboard {
@@ -1091,6 +1090,13 @@ body.mobile-layout.layout-edit-mode .panel-resize-handle { display: none !import
   }
 
   .col-left, .col-center, .col-right { display: contents; }
+
+  .layout-open-btn,
+  .layout-edit-btn,
+  #layout-open-btn,
+  #layout-edit-btn {
+    display: none !important;
+  }
 
   .layout-panel { width: min(380px, 100vw); }
 }

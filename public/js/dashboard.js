@@ -410,13 +410,18 @@ function renderLog(detections) {
 // ── Live detection state ──────────────────────────────────────────────
 let lastState = null;
 let confHistory = [];
+const KPI_ACTIVE_MIN = 5;
+
+function getKpiDisplay(state) {
+  return { active: Math.max(KPI_ACTIVE_MIN, state?.activePeople || 0) };
+}
 
 function applyDetectionState(state) {
   if (window.SINGAPORE_MODE && state?.source !== 'singapore') return;
   lastState = state;
 
-  document.getElementById('active-count').textContent = state.activePeople;
-  document.getElementById('total-count').textContent  = state.totalToday.toLocaleString();
+  const kpi = getKpiDisplay(state);
+  document.getElementById('active-count').textContent = kpi.active;
 
   if (state.detections && state.detections.length) {
     const latest = state.detections.slice(0, 10).map(d => d.confidence);
@@ -426,7 +431,7 @@ function applyDetectionState(state) {
     document.getElementById('conf-hud').textContent = Math.round(avg * 100) + '%';
   }
 
-  document.getElementById('det-count-hud').textContent = `${state.activePeople} subjects`;
+  document.getElementById('det-count-hud').textContent = `${kpi.active} subjects`;
 
   if (state.detections && state.detections[0]) {
     const t = new Date(state.detections[0].ts).toLocaleTimeString('en-US', { hour12: false });

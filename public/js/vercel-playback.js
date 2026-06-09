@@ -15,8 +15,7 @@
   let advancing = false;
   let lastTick = 0;
 
-  let totalToday = 0;
-  let activePeople = 3;
+  let activePeople = 5;
   let sessionHourly = Array(24).fill(0);
   let sexBreakdown = { Male: 0, Female: 0 };
   let ageBreakdown = Object.fromEntries(AGE_GROUPS.map(a => [a, 0]));
@@ -61,7 +60,6 @@
     const age = pick(AGE_GROUPS);
     const origin = pick(ORIGIN_OPTIONS);
     personSeq++;
-    totalToday++;
     sexBreakdown[sex]++;
     ageBreakdown[age]++;
     originBreakdown[origin]++;
@@ -78,16 +76,17 @@
 
   function buildState(video) {
     const globalT = sessionTime(video);
+    const active = Math.max(5, activePeople);
     return {
-      activePeople,
-      totalToday,
+      activePeople: active,
+      totalToday: active,
       hourlyData: buildHourlyMountain(globalT),
       dailyData: [
-        Math.round(totalToday * 0.35),
-        Math.round(totalToday * 0.48),
-        Math.round(totalToday * 0.62),
-        Math.round(totalToday * 0.78),
-        totalToday,
+        Math.round(active * 0.7),
+        Math.round(active * 0.85),
+        active,
+        active,
+        active,
         null,
         null,
       ],
@@ -108,7 +107,7 @@
     if (now - lastTick < 400) return;
     lastTick = now;
 
-    activePeople = Math.max(1, Math.min(18, Math.round(4 + 6 * Math.sin(now / 2200 + currentVideoIndex) + rand(-2, 3))));
+    activePeople = Math.max(5, Math.min(18, Math.round(5 + 5 * Math.sin(now / 2200 + currentVideoIndex) + rand(-1, 2))));
     const h = Math.min(23, Math.floor((sessionTime(video) / timelineDuration()) * 24));
     sessionHourly[h] = Math.max(sessionHourly[h] || 0, activePeople);
     maybeAddPerson();
