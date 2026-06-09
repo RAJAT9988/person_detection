@@ -488,25 +488,58 @@ function clientSimulateTick() {
   applyDetectionState(state);
 }
 
+function startClientSimulation() {
+  clientSimulateTick();
+  setInterval(clientSimulateTick, 2500 + Math.random() * 2000);
+}
+
 function initSocketFeed() {
   if (typeof io !== 'function' || window.__noSocketIo) {
-    clientSimulateTick();
-    setInterval(clientSimulateTick, 2500 + Math.random() * 2000);
+    startClientSimulation();
     return;
   }
   const socket = io();
-  socket.on('detection_update', applyDetectionState);
+  let gotData = false;
+  socket.on('detection_update', (state) => {
+    gotData = true;
+    applyDetectionState(state);
+  });
+  setTimeout(() => {
+    if (!gotData && !window.SINGAPORE_MODE) startClientSimulation();
+  }, 2500);
 }
 
 async function initDataFeed() {
+  let status = null;
+  try {
+    const res = await fetch('/api/singapore/status', { cache: 'no-store' });
+    if (res.ok) status = await res.json();
+  } catch { /* offline / static host */ }
+
+  if (status?.mode === 'playback' && typeof window.initVercelPlayback === 'function') {
+    try {
+      if (await window.initVercelPlayback({ force: true })) return;
+    } catch (e) {
+      console.warn('[Playback]', e);
+    }
+  }
+
+  if (status?.available && status?.mode !== 'playback' && typeof window.initSingaporeEngine === 'function') {
+    try {
+      if (await window.initSingaporeEngine()) return;
+    } catch (e) {
+      console.warn('[Singapore]', e);
+    }
+  }
+
   if (typeof window.initVercelPlayback === 'function') {
-    const ok = await window.initVercelPlayback();
-    if (ok) return;
+    try {
+      if (await window.initVercelPlayback({ force: true })) return;
+    } catch (e) {
+      console.warn('[Playback fallback]', e);
+    }
   }
-  if (typeof window.initSingaporeEngine === 'function') {
-    const ok = await window.initSingaporeEngine();
-    if (ok) return;
-  }
+
   initSocketFeed();
 }
 

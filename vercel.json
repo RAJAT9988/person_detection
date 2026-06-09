@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "framework": null,
   "env": {
-    "ASSETS_BASE_URL": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public"
+    "ASSETS_BASE_URL": "https://media.githubusercontent.com/media/RAJAT9988/person_detection/main/singapor/public"
   },
   "rewrites": [
     {
@@ -17,7 +17,7 @@
     },
     {
       "source": "/singapor/:path*",
-      "destination": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public/:path*"
+      "destination": "https://media.githubusercontent.com/media/RAJAT9988/person_detection/main/singapor/public/:path*"
     }
   ],
   "headers": [

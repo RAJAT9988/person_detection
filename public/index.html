@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>ATOMO — Analytics Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -14,16 +14,13 @@
 <header class="topbar">
   <div class="topbar-left">
     <div class="brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M16 4C9.37 4 4 9.37 4 16s5.37 12 12 12 12-5.37 12-12S22.63 4 16 4z" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 2"/>
-          <line x1="16" y1="2" x2="16" y2="7" stroke="currentColor" stroke-width="1.5"/>
-          <line x1="16" y1="25" x2="16" y2="30" stroke="currentColor" stroke-width="1.5"/>
-          <line x1="2" y1="16" x2="7" y2="16" stroke="currentColor" stroke-width="1.5"/>
-          <line x1="25" y1="16" x2="30" y2="16" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-      </div>
+      <img
+        src="/atomoheaderlogo.png"
+        alt="ATOMO"
+        class="brand-logo"
+        width="729"
+        height="756"
+      />
       <div class="brand-text">
         <span class="brand-name">ATOMO</span>
         <span class="brand-sub">Analytics Dashboard</span>
@@ -50,10 +47,10 @@
 
   <div class="topbar-right">
     <button type="button" class="layout-open-btn layout-edit-btn" id="layout-edit-btn" title="Drag to rearrange panels" aria-pressed="false">
-      <span>⠿</span> EDIT
+      <span class="btn-icon" aria-hidden="true">⠿</span><span class="btn-label">EDIT</span>
     </button>
     <button type="button" class="layout-open-btn" id="layout-open-btn" title="Layout settings">
-      <span>⊞</span> LAYOUT
+      <span class="btn-icon" aria-hidden="true">⊞</span><span class="btn-label">LAYOUT</span>
     </button>
     <div class="kpi-chip">
       <span class="kpi-icon">◈</span>
@@ -163,10 +160,7 @@
       </div>
 
       <div class="video-wrap">
-        <video id="feed-video" autoplay muted playsinline>
-          <source src="/videos/feed.mp4" type="video/mp4" />
-          <source src="/videos/feed.webm" type="video/webm" />
-        </video>
+        <video id="feed-video" autoplay muted playsinline></video>
         <canvas id="detection-canvas"></canvas>
 
         <!-- Fallback placeholder -->

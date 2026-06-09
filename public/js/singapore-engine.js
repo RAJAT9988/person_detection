@@ -247,6 +247,7 @@ function waitForVideoReady(video, timeoutMs = 10000) {
       reject(new Error('Video load error'));
     };
     video.addEventListener('loadeddata', done, { once: true });
+    video.addEventListener('canplay', done, { once: true });
     video.addEventListener('error', fail, { once: true });
   });
 }
@@ -273,6 +274,7 @@ async function loadVideoAtIndex(video, index) {
   video.pause();
   video.removeAttribute('loop');
   video.loop = false;
+  video.querySelectorAll('source').forEach((s) => s.remove());
   video.src = videoUrl(item);
   video.load();
 
@@ -408,16 +410,18 @@ async function initSingaporeEngine() {
   video.removeAttribute('loop');
   video.loop = false;
 
-  const ok = await loadVideoAtIndex(video, 0);
-  if (!ok) return false;
+  try {
+    const ok = await loadVideoAtIndex(video, 0);
+    if (!ok) return false;
+  } catch (err) {
+    console.error('[Singapore] Failed to load first video:', err);
+    return false;
+  }
 
   bindVideoEvents(video);
-
-  video.addEventListener('canplay', async () => {
-    if (placeholder) placeholder.style.display = 'none';
-    await safePlay(video);
-    syncFrame(video);
-  }, { once: true });
+  if (placeholder) placeholder.style.display = 'none';
+  await safePlay(video);
+  syncFrame(video);
 
   document.body.classList.add('singapore-mode');
   window.SINGAPORE_MODE = true;
