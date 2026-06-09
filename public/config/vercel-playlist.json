@@ -1,0 +1,9 @@
+{
+  "assetsBase": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public",
+  "loop": true,
+  "videos": [
+    { "id": "at1", "label": "Camera 1", "file": "at1_processed.mp4" },
+    { "id": "at2", "label": "Camera 2", "file": "at2_processed.mp4" },
+    { "id": "at3", "label": "Camera 3", "file": "temp_at3_processed.mp4", "fallback": "at3.avi" }
+  ]
+}

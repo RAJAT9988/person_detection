@@ -403,6 +403,7 @@ let confHistory = [];
 
 function applyDetectionState(state) {
   if (window.SINGAPORE_MODE && state?.source !== 'singapore') return;
+  if (window.VERCEL_DEMO_MODE && state?.source !== 'demo') return;
   lastState = state;
 
   document.getElementById('active-count').textContent = state.activePeople;
@@ -447,7 +448,7 @@ function applyDetectionState(state) {
   originChart.data.datasets[0].data = Object.values(state.originBreakdown);
   originChart.update('none');
 
-  if (!window.SINGAPORE_MODE) {
+  if (window.VERCEL_DEMO_MODE || !window.SINGAPORE_MODE) {
     buildOverlay(state.activePeople, state.detections || []);
   } else {
     overlayBoxes = [];
@@ -458,12 +459,51 @@ function applyDetectionState(state) {
 
 window.applyDetectionState = applyDetectionState;
 
+const SEX_OPTS = ['Male', 'Female'];
+const AGE_OPTS = ['0–17', '18–25', '26–35', '36–50', '51–65', '65+'];
+const ORIGIN_OPTS = ['South Asian', 'East Asian', 'Middle Eastern', 'African', 'European', 'American', 'Other'];
+
+function clientSimulateTick() {
+  const count = Math.floor(Math.random() * 3) + 1;
+  const state = lastState || {
+    totalToday: 0, activePeople: 0,
+    hourlyData: Array(24).fill(0), dailyData: Array(7).fill(0),
+    sexBreakdown: { Male: 0, Female: 0 },
+    ageBreakdown: Object.fromEntries(AGE_OPTS.map(a => [a, 0])),
+    originBreakdown: Object.fromEntries(ORIGIN_OPTS.map(o => [o, 0])),
+    detections: [],
+  };
+  for (let i = 0; i < count; i++) {
+    const sex = SEX_OPTS[Math.random() < 0.54 ? 0 : 1];
+    const age = AGE_OPTS[Math.floor(Math.random() * AGE_OPTS.length)];
+    const origin = ORIGIN_OPTS[Math.floor(Math.random() * ORIGIN_OPTS.length)];
+    state.totalToday++;
+    state.hourlyData[new Date().getHours()]++;
+    state.sexBreakdown[sex]++;
+    state.ageBreakdown[age]++;
+    state.originBreakdown[origin]++;
+    state.detections.unshift({ sex, age, origin, confidence: 0.88 + Math.random() * 0.1, ts: Date.now() });
+    if (state.detections.length > 50) state.detections.pop();
+  }
+  state.activePeople = Math.min(30, Math.max(0, (state.activePeople || 0) + count - 1));
+  applyDetectionState(state);
+}
+
 function initSocketFeed() {
+  if (typeof io !== 'function' || window.__noSocketIo) {
+    clientSimulateTick();
+    setInterval(clientSimulateTick, 2500 + Math.random() * 2000);
+    return;
+  }
   const socket = io();
   socket.on('detection_update', applyDetectionState);
 }
 
 async function initDataFeed() {
+  if (typeof window.initVercelVideoEngine === 'function') {
+    const ok = await window.initVercelVideoEngine();
+    if (ok) return;
+  }
   if (typeof window.initSingaporeEngine === 'function') {
     const ok = await window.initSingaporeEngine();
     if (ok) return;

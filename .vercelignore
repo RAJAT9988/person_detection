@@ -1,0 +1,5 @@
+singapor/public/*.avi
+singapor/public/temp_*
+singapor/public/*_processed.mp4
+node_modules
+.git

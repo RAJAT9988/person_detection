@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "buildCommand": "node scripts/vercel-build.js",
+  "installCommand": "npm install",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/singapor/:path*",
+      "destination": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/singapor/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
