@@ -368,7 +368,7 @@ function buildOverlay(activePeople, detections) {
       y: 0.08 + row * 0.44 + (Math.cos(i * 0.9 + Date.now()/9000) * 0.02),
       w: 0.17 + (i % 2) * 0.04,
       h: 0.34 + (i % 3) * 0.04,
-      sex:  d.sex  || (Math.random() < 0.51 ? 'Male' : 'Female'),
+      sex:  d.sex  || (Math.random() > 0.5 ? 'Male' : 'Female'),
       age:  d.age  || '26–35',
       conf: d.confidence || 0.88,
     });
@@ -474,7 +474,7 @@ function clientSimulateTick() {
     detections: [],
   };
   for (let i = 0; i < count; i++) {
-    const sex = SEX_OPTS[Math.random() < 0.51 ? 0 : 1];
+    const sex = SEX_OPTS[Math.random() < 0.54 ? 0 : 1];
     const age = AGE_OPTS[Math.floor(Math.random() * AGE_OPTS.length)];
     const origin = ORIGIN_OPTS[Math.floor(Math.random() * ORIGIN_OPTS.length)];
     state.totalToday++;
