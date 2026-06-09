@@ -61,7 +61,17 @@ function refreshChartsForLayout() {
   });
 }
 
+window.refreshChartsForLayout = refreshChartsForLayout;
 window.addEventListener('layout-applied', refreshChartsForLayout);
+
+let resizeRefreshTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeRefreshTimer);
+  resizeRefreshTimer = setTimeout(refreshChartsForLayout, 150);
+});
+window.addEventListener('orientationchange', () => {
+  setTimeout(refreshChartsForLayout, 300);
+});
 
 const CYAN    = '#2563eb';
 const PURPLE  = '#6366f1';

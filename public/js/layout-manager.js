@@ -69,6 +69,40 @@ const LAYOUT_PRESETS = {
 const DEFAULT_LAYOUT = structuredClone(LAYOUT_PRESETS.balanced);
 
 let currentConfig = structuredClone(DEFAULT_LAYOUT);
+const MOBILE_MQ = window.matchMedia('(max-width: 900px)');
+
+function isMobileLayout() {
+  return MOBILE_MQ.matches;
+}
+
+function applyMobilePanelStyles(isMobile) {
+  document.querySelectorAll('[data-panel-id]').forEach((el) => {
+    if (isMobile) {
+      el.style.flex = 'none';
+      el.style.minWidth = '0';
+      el.style.maxWidth = '100%';
+    } else {
+      el.style.flex = '';
+      el.style.minWidth = '';
+      el.style.maxWidth = '';
+    }
+  });
+}
+
+function syncMobileLayout() {
+  const mobile = isMobileLayout();
+  document.body.classList.toggle('mobile-layout', mobile);
+  document.documentElement.classList.toggle('mobile-layout', mobile);
+  applyMobilePanelStyles(mobile);
+  if (!mobile) applyPanelLayout(currentConfig);
+  window.dispatchEvent(new CustomEvent('layout-applied', { detail: currentConfig }));
+  if (mobile) {
+    requestAnimationFrame(() => {
+      window.refreshChartsForLayout?.();
+      setTimeout(() => window.refreshChartsForLayout?.(), 150);
+    });
+  }
+}
 
 function deepMerge(base, patch) {
   const out = structuredClone(base);
@@ -170,7 +204,14 @@ function applyLayout(cfg) {
     dashboard.classList.toggle('hide-right', !visibility.right);
   }
 
-  applyPanelLayout(cfg);
+  if (isMobileLayout()) {
+    applyMobilePanelStyles(true);
+  } else {
+    applyPanelLayout(cfg);
+  }
+
+  document.body.classList.toggle('mobile-layout', isMobileLayout());
+  document.documentElement.classList.toggle('mobile-layout', isMobileLayout());
 
   window.dispatchEvent(new CustomEvent('layout-applied', { detail: cfg }));
 }
@@ -393,10 +434,20 @@ window.LayoutManager = {
   const stored = loadFromStorage();
   if (stored) cfg = deepMerge(cfg, stored);
   applyLayout(cfg);
+  syncMobileLayout();
 })();
 
+MOBILE_MQ.addEventListener('change', () => {
+  syncMobileLayout();
+  if (window.refreshChartsForLayout) window.refreshChartsForLayout();
+});
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initLayoutManager);
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayoutManager();
+    syncMobileLayout();
+  });
 } else {
   initLayoutManager();
+  syncMobileLayout();
 }
