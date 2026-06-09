@@ -381,6 +381,7 @@ async function initSingaporeEngine() {
     const statusRes = await fetch('/api/singapore/status', { cache: 'no-store' });
     if (statusRes.ok) {
       const status = await statusRes.json();
+      if (status.mode === 'playback') return false;
       if (!status.available) throw new Error('Singapore assets missing');
       cacheVersion = status.videoVersion || Date.now();
       needsReprocess = status.needsReprocess;

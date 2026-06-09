@@ -3,7 +3,18 @@
   "buildCommand": "node scripts/vercel-build.js",
   "installCommand": "npm install",
   "framework": null,
+  "env": {
+    "ASSETS_BASE_URL": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public"
+  },
   "rewrites": [
+    {
+      "source": "/api/singapore/playlist",
+      "destination": "/api/singapore/playlist"
+    },
+    {
+      "source": "/api/singapore/status",
+      "destination": "/api/singapore/status"
+    },
     {
       "source": "/singapor/:path*",
       "destination": "https://media.githubusercontent.com/media/Atomo-innovation/singapor/main/singapor/public/:path*"

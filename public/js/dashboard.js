@@ -403,7 +403,6 @@ let confHistory = [];
 
 function applyDetectionState(state) {
   if (window.SINGAPORE_MODE && state?.source !== 'singapore') return;
-  if (window.VERCEL_DEMO_MODE && state?.source !== 'demo') return;
   lastState = state;
 
   document.getElementById('active-count').textContent = state.activePeople;
@@ -448,7 +447,7 @@ function applyDetectionState(state) {
   originChart.data.datasets[0].data = Object.values(state.originBreakdown);
   originChart.update('none');
 
-  if (window.VERCEL_DEMO_MODE || !window.SINGAPORE_MODE) {
+  if (!window.SINGAPORE_MODE) {
     buildOverlay(state.activePeople, state.detections || []);
   } else {
     overlayBoxes = [];
@@ -500,8 +499,8 @@ function initSocketFeed() {
 }
 
 async function initDataFeed() {
-  if (typeof window.initVercelVideoEngine === 'function') {
-    const ok = await window.initVercelVideoEngine();
+  if (typeof window.initVercelPlayback === 'function') {
+    const ok = await window.initVercelPlayback();
     if (ok) return;
   }
   if (typeof window.initSingaporeEngine === 'function') {
